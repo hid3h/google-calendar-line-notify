@@ -1,0 +1,22 @@
+version: '3'
+services:
+  web:
+    build: .
+    command: /bin/sh -c "rm -f tmp/pids/server.pid && bundle exec rails s -p 3000 -b '0.0.0.0'"
+    # tty: true
+    volumes:
+      - .:/myapp
+    env_file:
+      - .env
+    ports:
+      - "3004:3000"
+  db:
+    image: mysql:8.0.20 # imageがローカルにあったので
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+    ports:
+      - 3331:3306
+    volumes:
+      - ../../mysql/mysql_data:/var/lib/mysql # データの永続化 ホストのディレクトリ:コンテナ内のディレクトリで中身が同期される
+      - ../../mysql/conf.d:/etc/mysql/conf.d
